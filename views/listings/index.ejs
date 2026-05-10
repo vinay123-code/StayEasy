@@ -1,0 +1,217 @@
+<% layout("/layouts/boilerplate") %>
+<style> 
+  .filter-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    margin-bottom: 1rem;
+  }
+
+  #filters {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    gap: 16px;
+    padding: 12px 0;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    flex: 1;
+  }
+
+  #filters::-webkit-scrollbar { display: none; }
+
+  .filter {
+    text-decoration: none;
+    color: #717171;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 8px;
+    gap: 6px;
+    flex-shrink: 0;
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s ease;
+    min-width: fit-content;
+  }
+  .filter:hover {
+    color: #222;
+    border-bottom: 2px solid #717171;
+    cursor: pointer;
+  }
+  .filter.active {
+    color: #222;
+    border-bottom: 2px solid black;
+    font-weight: 600;
+  }
+
+  .scroll-btn {
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    min-width: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    transition: all 0.2s;
+  }
+  .scroll-btn:hover {
+    box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+  }
+
+  .tax-toggle {
+    flex-shrink: 0;
+    border: 1px solid rgba(148,147,147,0.22);
+    border-radius: 1rem;
+    height: 3rem;
+    padding: 0.5rem 1rem;
+    display: flex;
+    align-items: center;
+    white-space: nowrap;
+    margin-left: 8px;
+  }
+
+  .no-results {
+    text-align: center;
+    color: #717171;
+    margin-top: 3rem;
+    font-size: 1.1rem;
+  }
+  .tax-info{
+    display: none;
+  }
+</style>
+
+<div class="filter-wrapper">
+
+  <button class="scroll-btn" id="scrollLeft">
+    <i class="fa-solid fa-chevron-left"></i>
+  </button>
+
+  <div id="filters">
+    <a href="/listings" class="filter <%= !currCategory ? 'active' : '' %>">
+      <i class="fa-solid fa-list"></i>
+      <p>All</p>
+    </a>
+    <a href="/listings?category=Trending" class="filter <%= currCategory === 'Trending' ? 'active' : '' %>">
+      <i class="fa-solid fa-fire"></i>
+      <p>Trending</p>
+    </a>
+    <a href="/listings?category=Rooms" class="filter <%= currCategory === 'Rooms' ? 'active' : '' %>">
+      <i class="fa-solid fa-bed"></i>
+      <p>Rooms</p>
+    </a>
+    <a href="/listings?category=Iconic Cities" class="filter <%= currCategory === 'Iconic Cities' ? 'active' : '' %>">
+      <i class="fa-solid fa-mountain-city"></i>
+      <p>Iconic Cities</p>
+    </a>
+    <a href="/listings?category=Mountains" class="filter <%= currCategory === 'Mountains' ? 'active' : '' %>">
+      <i class="fa-solid fa-mountain"></i>
+      <p>Mountains</p>
+    </a>
+    <a href="/listings?category=Castles" class="filter <%= currCategory === 'Castles' ? 'active' : '' %>">
+      <i class="fa-brands fa-fort-awesome"></i>
+      <p>Castles</p>
+    </a>
+    <a href="/listings?category=Amazing Pools" class="filter <%= currCategory === 'Amazing Pools' ? 'active' : '' %>">
+      <i class="fa-solid fa-person-swimming"></i>
+      <p>Amazing Pools</p>
+    </a>
+    <a href="/listings?category=Camping" class="filter <%= currCategory === 'Camping' ? 'active' : '' %>">
+      <i class="fa-solid fa-campground"></i>
+      <p>Camping</p>
+    </a>
+    <a href="/listings?category=Farms" class="filter <%= currCategory === 'Farms' ? 'active' : '' %>">
+      <i class="fa-solid fa-tractor"></i>
+      <p>Farms</p>
+    </a>
+    <a href="/listings?category=Arctic" class="filter <%= currCategory === 'Arctic' ? 'active' : '' %>">
+      <i class="fa-regular fa-snowflake"></i>
+      <p>Arctic</p>
+    </a>
+    <a href="/listings?category=Arctic" class="filter <%= currCategory === 'Arctic' ? 'active' : '' %>">
+      <i class="fa-solid fa-ferry"></i>
+      <p>Boates</p>
+    </a>
+    <a href="/listings?category=Camping" class="filter <%= currCategory === 'Camping' ? 'active' : '' %>">
+      <i class="fa-solid fa-person-hiking"></i>
+      <p>Near Hiking </p>
+    </a>
+  </div>
+
+  <div class="tax-toggle">
+    <div class="form-check-reverse form-switch">
+      <input class="form-check-input" type="checkbox" role="switch" id="switchCheckDefault">
+      <label class="form-check-label" for="switchCheckDefault">Display total before taxes</label>
+    </div>
+  </div>
+
+  <button class="scroll-btn" id="scrollRight">
+    <i class="fa-solid fa-chevron-right"></i>
+  </button>
+
+</div>
+<% if (currQuery) { %>
+  <p class="text-muted mt-2">
+    <%= alllisting.length %> result<%= alllisting.length !== 1 ? 's' : '' %> 
+    for "<b><%= currQuery %></b>"
+    <a href="/listings" class="ms-2 text-success" style="font-size:0.9rem;">Clear</a>
+  </p>
+<% } %>
+<div class="row row-cols-lg-3 row-cols-md-2 row-cols-sm-1 mt-4">
+  <% if (alllisting.length === 0) { %>
+    <div class="col-12 no-results">
+      <i class="fa-solid fa-triangle-exclamation"></i>
+      No listings found for "<%= currCategory %>" category.
+      <br><a href="/listings">View all listings</a>
+    </div>
+  <% } else { %>
+    <% for (let listing of alllisting) { %>
+      <a href="/listings/<%= listing._id %>" class="listing-link">
+        <div class="card col listing-card">
+          <img src="<%= listing.image.url %>" class="card-img-top" alt="listing_image" style="height: 20rem;"/>
+          <div class="card-img-overlay"></div>
+          <div class="card-body">
+            <p class="card-text">
+              <b><%= listing.title %></b><br>
+              &#8377; <%= listing.price ? listing.price.toLocaleString("en-IN") : "1200" %> / night
+              <i class="tax-info"> &nbsp; &nbsp;+18% GST </i>
+            </p>
+          </div>
+        </div>
+      </a>
+    <% } %>
+  <% } %>
+</div>
+<script>
+  let taxSwitch = document.getElementById("switchCheckDefault")
+  taxSwitch.addEventListener("click",() => {
+    let taxinfo = document.getElementsByClassName("tax-info");
+    for(info of taxinfo){
+      if(info.style.display != "inline"){
+        info.style.display = "inline"; 
+      }else{
+        info.style.display = "none";
+      }
+    }
+  })
+</script>
+<script>
+  const filters  = document.getElementById("filters");
+  const leftBtn  = document.getElementById("scrollLeft");
+  const rightBtn = document.getElementById("scrollRight");
+
+  leftBtn.style.display = "none";
+
+  leftBtn.addEventListener("click",  () => filters.scrollBy({ left: -200, behavior: "smooth" }));
+  rightBtn.addEventListener("click", () => filters.scrollBy({ left:  200, behavior: "smooth" }));
+
+  filters.addEventListener("scroll", () => {
+    leftBtn.style.display  = filters.scrollLeft > 0 ? "flex" : "none";
+    rightBtn.style.display = filters.scrollLeft + filters.clientWidth < filters.scrollWidth - 1
+      ? "flex" : "none";
+  });
+</script>
