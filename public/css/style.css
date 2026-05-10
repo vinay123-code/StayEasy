@@ -12,7 +12,12 @@ body{
     padding-right: 2.5rem !important;
 }
 /* nav bar  */
-
+.navbar-collapse {
+    background-color: white;
+    padding: 1rem;
+    z-index: 1031;
+    position: relative;
+}
 .navbar{
     height: 5rem;
     background-color: white;
@@ -125,6 +130,8 @@ body{
 /* } */
 #map {
     height: 400px;
-    width: 80vh;
+    width: 100%;        /* ✅ responsive */
+    max-width: 100%;
     border-radius: 20px;
 }
+
