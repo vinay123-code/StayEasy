@@ -53,6 +53,8 @@ const sessionoptions = {
     },
 }
 
+const PORT = process.env.PORT || 8080;
+
 
 main().then( ()=>{
     console.log("CONNECTED TO DB ")
@@ -104,6 +106,7 @@ app.use((err,req,res,next)=>{
     // res.status(status).send(message);
 })
 
-app.listen("8080",()=>{
-    console.log("server is listening on port 8080");
-})
+
+app.listen(PORT, () => {
+    console.log(`server is listening on port ${PORT}`);
+});
