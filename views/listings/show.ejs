@@ -17,7 +17,7 @@
   </div>
 
   <!-- Edit/Delete buttons -->
-  <% if (locals.currUser && locals.currUser._id.equals(listing.owner.id)) { %>
+  <% if (currUser && currUser._id.equals(listing.owner.id)) { %>
   <div class="col-10 offset-1 col-md-8 offset-md-2 d-flex gap-2 mb-3">
     <a href="/listings/<%= listing._id %>/edit" class="btn btn-dark edit-btn">Edit</a>
     <form method="post" action="/listings/<%= listing._id %>?_method=DELETE">
@@ -29,7 +29,7 @@
   <!-- Reviews section -->
   <div class="col-10 offset-1 col-md-8 offset-md-2">
     <hr />
-    <% if(locals.currUser) { %>
+    <% if(currUser) { %>
     <h4>Leave a Review</h4>
     <form action="/listings/<%= listing._id %>/reviews" method="post" novalidate class="needs-validation">
       <div class="mb-3 mt-3">
