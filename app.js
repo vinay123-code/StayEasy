@@ -2,12 +2,13 @@ if(process.env.NODE_ENV != "production"){
     require("dotenv").config()
 }
 
+const DB_URL = process.env.NODE_ENV === "production" 
+    ? process.env.ATLAS_DB 
+    : "mongodb://127.0.0.1:27017/wanderlust";
+
 const express = require("express");
 const app = express();
 const mongoose = require("mongoose");
-
-const DB_URL = process.env.ATLAS_DB;
-
 
 
 const path = require("path");
@@ -27,20 +28,22 @@ const Localstrategy = require("passport-local");
 const User = require("./models/user.js");
 
 const store = MongoStore.create({
-    mongoUrl: DB_URL,
+    mongoUrl: process.env.NODE_ENV === "production" 
+        ? process.env.ATLAS_DB 
+        : "mongodb://127.0.0.1:27017/wanderlust",
     crypto: {
-        secret: process.env.SECRET,
+        secret: process.env.SECRET || "fallbacksecret",
     },
     touchAfter: 24 * 3600,
 })
 
-store.on("error", ()=>{
+store.on("error", (err)=>{
     console.log("ERROR in MONGO SESSION STORE", err);
 })
 
 const sessionoptions = {
     store,
-    secret: process.env.SECRET,
+    secret: process.env.SECRET || "fallbacksecret",
     resave: false,
     saveUninitialized: true,
     cookie: {
@@ -67,10 +70,6 @@ app.use(methodOverride("_method"));
 app.engine("ejs", ejsMate);
 app.use(express.static(path.join(__dirname,"/public")));
 
-// app.get("/", (req,res)=>{
-//    res.send("this is root route ")
-// })
-
 app.use(session(sessionoptions));
 app.use(flash());
 
@@ -88,15 +87,6 @@ app.use((req,res,next)=>{
     res.locals.currUser = req.user;
     next();
 });
-
-// app.get("/demouser",  async(req,res) =>{
-//   let fakeuser = new User ({
-//     email: "student@gmail.com",
-//     username: "vinayak"
-//   });
-//   let registereduser = await User.register(fakeuser, "helloworld");
-//   res.send(registereduser);
-// })
 
 
 app.use("/listings", listingrouter);

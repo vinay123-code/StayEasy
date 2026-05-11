@@ -101,7 +101,7 @@ module.exports.renderEditForm = async(req,res)=>{
     const listing = await Listing.findById(id);
     if(!listing){
         req.flash("error","listing you requested is does not exist")
-        res.redirect("/listings")
+        return res.redirect("/listings")
     }
     let originalimage = listing.image.url;
     res.render("./listings/edit.ejs",{listing, originalimage});
